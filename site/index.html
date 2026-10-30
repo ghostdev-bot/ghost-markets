@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Ghost Markets — Devnet demo, play money only</title>
+<meta name="description" content="Ghost Markets: a points-only prediction market demo on Solana devnet. Devnet demo, play money only, no real funds." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👻</text></svg>" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="devnet-banner" role="alert">⚠️ <b>Devnet demo, play money only, no real funds.</b> Bets use worthless Solana <b>devnet</b> SOL. There is no mainnet mode.</div>
+<header class="top">
+  <div class="brand"><span class="ghost">👻</span><div><h1>Ghost Markets</h1><small>memecoin prediction markets · Solana devnet</small></div></div>
+  <nav class="actions">
+    <a class="btn ghostbtn" href="https://faucet.solana.com/" target="_blank" rel="noopener">🚰 Get devnet SOL</a>
+    <button id="connectBtn" class="btn primary">Connect wallet</button>
+  </nav>
+</header>
+<div id="walletWarn" class="warn hidden"></div>
+<div id="statusBar" class="status hidden"></div>
+<main>
+  <div class="tabs">
+    <button class="tab active" data-tab="markets">Markets</button>
+    <button class="tab" data-tab="mybets">My bets</button>
+    <button class="tab" data-tab="about">How it works</button>
+  </div>
+  <section id="tab-markets">
+    <div id="previewNote" class="note hidden"></div>
+    <div id="marketGrid" class="grid"><div class="loading">Loading markets from devnet…</div></div>
+    <h3 class="sub" id="resolvedHdr" hidden>Resolved</h3>
+    <div id="resolvedGrid" class="grid"></div>
+  </section>
+  <section id="tab-mybets" class="hidden">
+    <div id="myBets"><p class="muted">Connect a devnet wallet to see your bets.</p></div>
+  </section>
+  <section id="tab-about" class="hidden about">
+    <h2>How it works</h2>
+    <ol>
+      <li>Switch your wallet to <b>Devnet</b>. Phantom: Settings → Developer Settings → Testnet Mode → <i>Solana Devnet</i>. Solflare: Settings → Network → <i>Devnet</i>.</li>
+      <li>Grab free devnet SOL from the <a href="https://faucet.solana.com/" target="_blank" rel="noopener">Solana faucet</a>. It has no value; it's play money.</li>
+      <li>Pick YES or NO. Your devnet SOL goes into the market's on-chain escrow (a program-owned PDA). Odds are parimutuel: YES% = YES pool ÷ total pool.</li>
+      <li>After the end time, the market admin resolves it YES, NO, or VOID. Winners split the whole pool pro-rata to their stake. VOID (or a winning side with no bets) refunds everyone.</li>
+      <li>Claim from <b>My bets</b>. Anyone can trigger payouts, and the money always goes to the bettor's own wallet.</li>
+    </ol>
+    <p class="muted">Program: <a id="progLink" target="_blank" rel="noopener"></a> · Admin: <a id="adminLink" target="_blank" rel="noopener"></a> · RPC: public devnet</p>
+    <p class="warnline">Devnet demo, play money only, no real funds. Not financial advice. Not a gambling product. Resolution is manual (trusted admin), not an oracle.</p>
+  </section>
+</main>
+<footer>👻 Ghost Markets · <b>Devnet demo, play money only, no real funds.</b> · built for the $BOBO Bear Council</footer>
+
+<div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="card modal-card">
+    <button class="x" id="modalClose" aria-label="close">✕</button>
+    <h3 id="mQ"></h3>
+    <div class="sidepick"><button class="btn yes" data-side="yes">YES <span id="mYes"></span></button><button class="btn no" data-side="no">NO <span id="mNo"></span></button></div>
+    <label>Amount (devnet SOL, play money)<input id="mAmt" type="number" min="0.001" step="0.01" value="0.1" /></label>
+    <div class="quick"><button data-a="0.05">0.05</button><button data-a="0.1">0.1</button><button data-a="0.5">0.5</button><button data-a="1">1</button></div>
+    <p id="mEst" class="muted"></p>
+    <button id="mConfirm" class="btn primary wide">Place bet on devnet</button>
+    <p class="tiny">Devnet demo, play money only, no real funds. The transaction is sent to Solana <b>devnet</b>.</p>
+  </div>
+</div>
+<script src="web3.iife.min.js"></script>
+<script type="module" src="app.js"></script>
+</body>
+</html>
