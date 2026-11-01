@@ -10,14 +10,13 @@ const { Connection, Keypair, PublicKey, Transaction, SystemProgram, LAMPORTS_PER
 const __dir = path.dirname(fileURLToPath(import.meta.url));
 
 const MAINNET_GENESIS = '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d';
-// Optional extra guard: comma-separated paths of mainnet keypairs this tool must never load.
-const FORBIDDEN_KEYS = (process.env.GM_FORBIDDEN_KEYS || '').split(',').filter(Boolean).map((p) => path.resolve(p));
+const FORBIDDEN_KEYS = ['/home/box/wallets/solana-elon.json', '/home/box/wallets/solana-bobo-buy.json', '/home/box/wallets/elon-key-phantom.txt'];
 
 const args = process.argv.slice(2);
 const cmd = args[0];
 const opt = (k, d) => { const i = args.indexOf('--' + k); return i >= 0 ? args[i + 1] : d; };
 const URL_ = opt('url', 'https://api.devnet.solana.com');
-const KEY = path.resolve(opt('keypair', process.env.GM_KEYPAIR || path.join(process.env.HOME || '.', '.config/solana/devnet-markets.json')));
+const KEY = path.resolve(opt('keypair', '/home/box/wallets/devnet-markets.json'));
 if (FORBIDDEN_KEYS.includes(KEY)) { console.error('Refusing: that is a mainnet wallet. Devnet keypair only.'); process.exit(2); }
 const loadKp = (p) => Keypair.fromSecretKey(Uint8Array.from(JSON.parse(fs.readFileSync(p, 'utf8'))));
 const conn = new Connection(URL_, 'confirmed');
@@ -111,7 +110,7 @@ async function main() {
     }
     case 'e2e': {
       // End-to-end: fund 2 script wallets, create a short market, YES + NO bets, resolve, crank payout, check balances.
-      const dir = path.join(__dir, '..', 'test-wallets'); fs.mkdirSync(dir, { recursive: true, mode: 0o700 });
+      const dir = (process.env.GM_TEST_WALLETS || '/home/box/wallets/test-keys/ghostmarkets'); fs.mkdirSync(dir, { recursive: true, mode: 0o700 });
       const mk = (n) => { const f = path.join(dir, n + '.json'); if (!fs.existsSync(f)) fs.writeFileSync(f, JSON.stringify(Array.from(Keypair.generate().secretKey)), { mode: 0o600 }); return loadKp(f); };
       const A = mk('alice'), B = mk('bob');
       const FUND = Math.round(Number(opt('fund', '0.05')) * LAMPORTS_PER_SOL);
@@ -168,7 +167,7 @@ async function main() {
   node scripts/gm.mjs payout --id N        # pays every bettor on market N (permissionless crank)
   node scripts/gm.mjs bet --id N --side yes|no --sol 0.01 --bettor path/to/devnet-keypair.json
   node scripts/gm.mjs e2e                  # full on-chain test with two script wallets
-Options: --url <rpc> (default https://api.devnet.solana.com) --keypair <admin keypair> (default $GM_KEYPAIR or ~/.config/solana/devnet-markets.json)`);
+Options: --url <rpc> (default https://api.devnet.solana.com) --keypair <admin keypair> (default /home/box/wallets/devnet-markets.json)`);
   }
 }
 main().catch((e) => { console.error('ERROR:', e.message); if (e.logs) console.error(e.logs.join('\n')); process.exit(1); });

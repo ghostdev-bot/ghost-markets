@@ -1,15 +1,14 @@
 {
   "name": "ghostmarkets",
   "version": "1.0.0",
-  "description": "Ghost Markets: devnet-only Solana prediction-market demo",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "vendor": "cp node_modules/@solana/web3.js/lib/index.iife.min.js site/web3.iife.min.js",
-    "serve": "npm run vendor && python3 -m http.server 8077 -d site"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "MIT",
+  "license": "ISC",
   "type": "module",
   "dependencies": {
     "@solana/web3.js": "^1.98.0",
